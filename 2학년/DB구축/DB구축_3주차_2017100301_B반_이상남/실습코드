@@ -1,0 +1,5 @@
+select NAME,TEL,SUBSTR(tel,INSTR(tel,')')+1,INSTR(SUBSTR(tel,INSTR(tel,')')+1),'-')-1) "AREA CODE"
+  2  FROM student WHERE deptno1 = 201;
+
+  select NAME,TEL,SUBSTR(tel,INSTR(tel,')')+1) "AREA CODE"
+  2  FROM student WHERE deptno1 = 201;

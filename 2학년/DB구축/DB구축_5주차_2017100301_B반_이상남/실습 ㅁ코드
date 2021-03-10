@@ -1,0 +1,206 @@
+select empno,ename,sal,case when sal between 1 and 1000 then 'level1'
+                               when sal between 1001 and 2000 then 'level2'
+                               when sal between 2001 and 3000 then 'level3'
+                               when sal between 3001 and 4000 then 'level4'
+                               when sal between 4001 and 5000 then 'level5'
+    end "LEVEL"
+  from emp order by sal desc;
+
+
+
+  set sqlprompt"_USER>"
+  set line 300;
+  set pagesize 500;
+
+  select 2+'2' from dual;
+  select 2+'A' from dual;
+1.1
+select SYSDATE, TO_CHAR(SYSDATE,'YYYY') "YYYY" ,
+                TO_CHAR(SYSDATE,'RRRR') "RRRR" ,
+                TO_CHAR(SYSDATE,'YY') "YY" ,
+                TO_CHAR(SYSDATE,'RR') "RR" ,
+                TO_CHAR(SYSDATE,'YEAR') "YERA"
+from dual;
+
+select SYSDATE, TO_CHAR(SYSDATE,'MM') "MM" ,
+                TO_CHAR(SYSDATE,'MON') "MON" ,
+                TO_CHAR(SYSDATE,'MONTH') "MONTH"
+from dual;
+
+select SYSDATE, TO_CHAR(SYSDATE,'DD') "DD" ,
+                TO_CHAR(SYSDATE,'DAY') "DAY" ,
+                TO_CHAR(SYSDATE,'DDTH') "DDTH"
+from dual;
+
+select SYSDATE, TO_CHAR(SYSDATE,'RRRR-MM-DD:HH24:MI:SS')
+from dual;
+
+select studno,name,birthday from student
+where TO_CHAR(birthday,'MM')=01 order by studno;
+
+select empno, ename, hiredate from emp
+where TO_CHAR(hiredate,'MM') between '01' and '03' order by empno ;
+1.2
+select empno, ename, sal, comm,
+        TO_CHAR((sal*12)+comm,'999,999') "SALARY"
+from emp where ename = 'ALLEN';
+
+select name, pay, bonus,
+        TO_CHAR((pay*12)+bonus,'999,999') "TOTAL"
+from professor where deptno=201;
+
+select empno, ename,
+        TO_CHAR(hiredate,'RRRR-MM-DD') "HIREDATE",
+          TO_CHAR((sal*12)+comm,'$99,999') "SAL",
+          TO_CHAR(((sal*12)+comm)+((sal*12)+comm)*0.15,'$99,999') "15% UP"
+from emp where comm is NOT NULL;
+
+1.3
+
+select TO_NUMBER('5') from dual;
+select TO_NUMBER('A') from dual;
+select ASCII('A') from dual;
+
+1.4
+
+select TO_DATE('99/01/16') from dual;
+select TO_DATE('1998/11/23') from dual;
+
+
+2.1
+
+select ename, comm, NVL(comm,0), NVL(comm,100)
+from emp where deptno=30;
+
+select profno, name, pay, bonus, (pay*12+NVL(bonus,0)) "TOTAL"
+from professor where deptno=201;
+
+2.2
+
+select empno, ename, sal, comm,
+      NVL2(comm, sal+comm, sal*0) "NVL2"
+from emp where deptno=30;
+
+select empno, ename, comm,
+      NVL2(comm,'Exist','NULL') "NVL2"
+from emp where deptno=30;
+
+2.3
+
+select deptno, name, DECODE(deptno, 101, 'Computer Engineerig') "DNAME"
+from professor;
+
+select deptno, name, DECODE(deptno, 101, 'Computer Engineerig', 'ETC') "DNAME"
+from professor;
+
+
+select deptno, name, DECODE(deptno, 101,'Computer Engineerig',
+                                    102,'Multimedia Engineerig',
+                                    103, 'Software Engineering',
+                                          'ETC') "DNAME"
+from professor;
+
+select deptno,name, DECODE(deptno,101,DECODE(name,'Audie Murphy','BEST!')) "ETC"
+from professor;
+
+select deptno,name,
+DECODE(deptno,101,DECODE(name,'Audie Murphy','BEST!','GOOD!')) "ETC"
+from professor;
+
+select deptno,name,
+DECODE(deptno,101,DECODE(name,'Audie Murphy','BEST!','GOOD!'),'N/A') "ETC"
+from professor;
+퀴즈
+
+select name, jumin,DECODE(SUBSTR(jumin,7,1),1,'MAN',2,'WOMAN') "Gender"
+from student where deptno1=101;
+
+select name,tel,DECODE(SUBSTR(tel,1,INSTR(tel,')')-1),
+                        '02','SEOUL','031','GYEONGGI',
+                        '051','BUSAN','052','ULSAN',
+                        '055','GYEONGNAM') "LOC"
+from student where deptno1=101;
+
+select name,tel,CASE(SUBSTR(tel,1,INSTR(tel,')')-1))
+                      WHEN '02' THEN 'SEOUL'
+                      WHEN '031' THEN 'GYEONGGI'
+                      WHEN '051' THEN 'BUSAN'
+                      WHEN '052' THEN 'ULSAN'
+                      WHEN '055' THEN 'GYEONGNAM'
+                      ELSE 'ETC' END "LOC"
+from student where deptno1=201;
+
+select name, SUBSTR(jumin,3,2)"MONTH",
+       CASE WHEN SUBSTR(jumin,3,2) BETWEEN '01' AND '03' THEN '1/4'
+            WHEN SUBSTR(jumin,3,2) BETWEEN '04' AND '06' THEN '2/4'
+            WHEN SUBSTR(jumin,3,2) BETWEEN '07' AND '09' THEN '3/4'
+            WHEN SUBSTR(jumin,3,2) BETWEEN '10' AND '12' THEN '4/4'
+       END "Quarter"
+from student;
+
+select empno, ename,sal,
+      CASE WHEN sal BETWEEN 1 and 1000 THEN 'LEVEL 1'
+           WHEN sal BETWEEN 1001 and 2000 THEN 'LEVEL 2'
+           WHEN sal BETWEEN 2001 and 3000 THEN 'LEVEL 3'
+           WHEN sal BETWEEN 3001 and 4000 THEN 'LEVEL 4'
+           ELSE 'LEVEL 5' END "LEVEL"
+from emp order by sal desc;
+
+3.1
+select COUNT(*),COUNT(COMM)
+from emp;
+3.2
+select COUNT(comm), SUM(comm)
+from emp;
+3,3
+select COUNT(comm), SUM(comm), AVG(comm)
+from emp;
+
+select COUNT(*), SUM(comm), AVG(comm),AVG(NVL(comm,0))
+from emp;
+3,4
+select MAX(sal),MIN(sal)
+from emp;
+
+select MAX(hiredate) "MAX",
+       MIN(hiredate) "MIN"
+from emp;
+3.5
+select STDDEV(sal),
+       VARIANCE(sal)
+from emp;
+4.1
+select deptno,AVG(NVL(sal,0)) "AVG"
+from emp group by deptno;
+
+select deptno,job,AVG(NVL(sal,0)) "AVG_SAL"
+from emp group by deptno,job order by 1,2;
+
+select deptno, AVG(NVL(sal,0))
+from emp where deptno >10
+group by deptno
+having AVG(NVL(sal,0)) > 2000;
+
+select deptno,job,ROUND(AVG(sal),1) avg_sal, COUNT(*) cnt_emp
+from emp GROUP BY ROLLUP(deptno,job);
+
+select deptno,position,COUNT(*), SUM(pay)
+from professor
+group by deptno, ROLLUP(position);
+
+create table professor2
+as select deptno, position, pay
+from professor;
+select * from professor2;
+
+insert into professor2 values(101,'instructor',100);
+insert into professor2 values(101,'a full professor',100);
+insert into professor2 values(101,'assistant professor',100);
+commit;
+
+select deptno,position,COUNT(*), SUM(pay)
+from professor2
+group by deptno, ROLLUP(position);
+
+select deptno,job,ROUND(AVG(sal),1) avg_sal, COUNT(*) cnt_emp
+from emp GROUP BY CUBE(deptno,job) order by deptno,job;

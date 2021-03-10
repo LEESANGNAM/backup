@@ -1,0 +1,63 @@
+set sqlprompt"_USER>"
+set line 5000
+set pagesize 500
+set serveroutput on
+
+
+DECLARE                                 //변수선언부
+TYPE emp_record_type IS RECORD        // 레코드 타입 변수를 선언합니다.
+( emp_id emp.empno%TYPE,              // emp_id 변수를 emp테이블에 empno타입으로 선언합니다.
+f_name emp.ename%TYPE,              // f_name 변수를 emp테이블에 ename타입으로 선언합니다.
+e_sal emp.sal%TYPE );               // e_sal  변수를 emp테이블에 sal타입으로 선언합니다.
+v_recl emp_record_type;               // v_recl 변수를 좀전에 선언한 레코드타입으로 선언합니다.
+BEGIN                                 //실행부
+select empno,ename,sal INTO v_recl  // empno,ename,sal을 찾아서 v_recl에 대입합니다.
+from emp
+where empno = 7654;
+DBMS_OUTPUT.PUT_LINE('아이디:'||v_recl.emp_id||' 이름 : '||v_recl.f_name||' 급여 : '||v_recl.e_sal);
+//화면 출력
+END ;
+/
+
+
+DECLARE                              //변수선언부
+  t_name VARCHAR2(20);
+  TYPE tbl_emp_name IS TABLE OF       // 테이블 타입 변수를 정의합니다.
+  emp.ename%TYPE
+  INDEX BY BINARY_INTEGER;           //인덱싱방법입니다. 생략가능합니다.
+  v_name tbl_emp_name;               //v_name을 테이블타입으로 선언합니다.
+  BEGIN
+    select ename INTO t_name         //ename을 검색해 t_name에 대입합니다.
+    from emp
+    where empno = 7654;
+    v_name(0) := t_name;            // t_name의 값을 v_name에 넣습니다.
+    DBMS_OUTPUT.PUT_LINE(v_name(0));
+  END ;
+  /
+
+
+DECLARE                              //변수선언부
+  TYPE e_table_type IS TABLE OF      // 테이블 타입변수 정의
+  emp.ename%TYPE
+  INDEX BY BINARY_INTEGER;          // 인덱싱방법 . 생략가능
+  tab_type e_table_type;            // e_table_type변수 tab_type 생성
+  a BINARY_INTEGER := 0;            // a 를 키로해서 0대입
+BEGIN
+  FOR i IN (select ename from emp) LOOP  // i를 ename만큼 반복
+    a := a+1;                            //a를1씩증가
+    tab_type(a) := i.ename;             //tab_type(1)에 ename(1)대입
+  END LOOP;                             // 첫번째부터 각자리수에 맞게 대입후 종료
+  FOR j in 1..a LOOP                   //j를 1부터 a까지 반복 a는이미 ename 갯수만큼증가
+    DBMS_OUTPUT.PUT_LINE(tab_type(j));  // ename을 전부 출력
+  END LOOP;
+  END;
+/
+
+VARIABLE v_bind NUMBER;               // 바인드 변수 선언(삭제되지않고 유지)
+BEGIN
+  SELECT (sal*12) INTO :v_bind        //sal*12를 검색해서 v_bind 에 대입
+  FROM emp
+  WHERE empno = 7654;
+END;
+/
+PRINT v_bind;                         //v_bind 를 출력

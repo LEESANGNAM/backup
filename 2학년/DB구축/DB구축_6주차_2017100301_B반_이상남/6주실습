@@ -1,0 +1,140 @@
+select TO_CHAR(MAX(sal+NVL(comm,0)),'9999.9') "MAX",
+       TO_CHAR(MIN(sal+NVL(comm,0)),'9999.9') "MIN",
+       TO_CHAR(AVG(sal+NVL(comm,0)),'9999.9') "AVG"
+from emp; //1
+
+select * from (select studno , TO_CHAR(birthday,'MM') "BIR" from student)
+PIVOT
+( COUNT(studno) FOR BIR IN ('01' as "JAN",'02' as "FEB",
+                           '03' as "MAR",'04' as "APR",
+                           '05' as "MAY",'06' as "JUN",
+                           '07' as "JUL",'08' as "AUG",
+                           '09' as "SEP",'10' as "ACT",
+                           '11' as "NOV",'12' as "DEC")
+);//2_2
+
+col TOTAL FOR a5
+col JAN FOR a3
+col FEB FOR a3
+col MAR FOR a3
+col APR FOR a3
+col MAY FOR a3
+col JUN FOR a3
+col JUL FOR a3
+col AUG FOR a3
+col SEP FOR a3
+col ACT FOR a3
+col NOV FOR a3
+col DEC FOR a3
+
+select count(*)||'EA' "TOTAL",
+COUNT(DECODE(TO_CHAR(birthday,'MM'),'01','a'))|| 'EA' "JAN",
+COUNT(DECODE(TO_CHAR(birthday,'MM'),'02','a'))|| 'EA' "FEB",
+COUNT(DECODE(TO_CHAR(birthday,'MM'),'03','a'))|| 'EA' "MAR",
+COUNT(DECODE(TO_CHAR(birthday,'MM'),'04','a'))|| 'EA' "APR",
+COUNT(DECODE(TO_CHAR(birthday,'MM'),'05','a'))|| 'EA' "MAY",
+COUNT(DECODE(TO_CHAR(birthday,'MM'),'06','a'))|| 'EA' "JUN",
+COUNT(DECODE(TO_CHAR(birthday,'MM'),'07','a'))|| 'EA' "JUL",
+COUNT(DECODE(TO_CHAR(birthday,'MM'),'08','a'))|| 'EA' "AUG",
+COUNT(DECODE(TO_CHAR(birthday,'MM'),'09','a'))|| 'EA' "SEP",
+COUNT(DECODE(TO_CHAR(birthday,'MM'),'10','a'))|| 'EA' "ACT",
+COUNT(DECODE(TO_CHAR(birthday,'MM'),'11','a'))|| 'EA' "NOV",
+COUNT(DECODE(TO_CHAR(birthday,'MM'),'12','a'))|| 'EA' "DEC"
+FROM student;//2
+
+col TOTAL FOR 999999
+select count(*) "TOTAL",
+COUNT(DECODE(SUBSTR(tel,1,INSTR(tel,')')-1),'02','s')) "SEOUL",
+COUNT(DECODE(SUBSTR(tel,1,INSTR(tel,')')-1),'031','s')) "GEYONGGI",
+COUNT(DECODE(SUBSTR(tel,1,INSTR(tel,')')-1),'051','s')) "BUSAN",
+COUNT(DECODE(SUBSTR(tel,1,INSTR(tel,')')-1),'052','s')) "ULSAN",
+COUNT(DECODE(SUBSTR(tel,1,INSTR(tel,')')-1),'053','s')) "DAEGU",
+COUNT(DECODE(SUBSTR(tel,1,INSTR(tel,')')-1),'055','s')) "GYENGNAM"
+from student;//3
+
+//4
+insert into emp (empno,deptno,ename,sal) values (1000,10,'Tiger',3600);
+insert into emp (empno,deptno,ename,sal) values (2000,10,'Cat',3000);
+
+select deptno, sum(decode(job,'CLERK',sal,0)) "CLERK",
+               sum(decode(job,'MANAGER',sal,0)) "MANAGER",
+               sum(decode(job,'PRESIDENT',sal,0)) "PRESIDENT",
+               sum(decode(job,'ANALYST',sal,0)) "ANALYST",
+               sum(decode(job,'SALESMAN',sal,0)) "SALESMAN",
+               sum(NVL2(job,sal,0)) "TOTAL"
+from emp group by rollup(deptno);
+
+
+//5
+select deptno,ename,sal,
+sum(sal) over(order by sal) "TOTAL"
+from emp;
+
+//6
+select * from fruit
+pivot(SUM(price) for name in('apple' as "APPLE",
+'grape' as "GRAPE",'orange' as "ORANGE"));
+
+//7
+col TOTAL FOR a10
+col SEOUL FOR a10
+col GEYONGGI FOR a10
+col BUSAN FOR a10
+col ULSAN FOR a10
+col DAEGU FOR a10
+col GYENGNAM FOR a10
+select count(*)||'EA('||(count(*)/count(*)*100)||'%)' "TOTAL",
+COUNT(DECODE(SUBSTR(tel,1,INSTR(tel,')')-1),'02','s'))||'EA('||
+(COUNT(DECODE(SUBSTR(tel,1,INSTR(tel,')')-1),'02','s'))/count(*)*100)||'%)' "SEOUL",
+COUNT(DECODE(SUBSTR(tel,1,INSTR(tel,')')-1),'031','s'))||'EA('||
+(COUNT(DECODE(SUBSTR(tel,1,INSTR(tel,')')-1),'031','s'))/count(*)*100)||'%)'"GEYONGGI",
+COUNT(DECODE(SUBSTR(tel,1,INSTR(tel,')')-1),'051','s'))||'EA('||
+(COUNT(DECODE(SUBSTR(tel,1,INSTR(tel,')')-1),'051','s'))/count(*)*100)||'%)'"BUSAN",
+COUNT(DECODE(SUBSTR(tel,1,INSTR(tel,')')-1),'052','s'))||'EA('||
+(COUNT(DECODE(SUBSTR(tel,1,INSTR(tel,')')-1),'052','s'))/count(*)*100)||'%)'"ULSAN",
+COUNT(DECODE(SUBSTR(tel,1,INSTR(tel,')')-1),'053','s'))||'EA('||
+(COUNT(DECODE(SUBSTR(tel,1,INSTR(tel,')')-1),'053','s'))/count(*)*100)||'%)'"DAEGU",
+COUNT(DECODE(SUBSTR(tel,1,INSTR(tel,')')-1),'055','s'))||'EA('||
+(COUNT(DECODE(SUBSTR(tel,1,INSTR(tel,')')-1),'055','s'))/count(*)*100)||'%)'"GYENGNAM"
+from student;
+
+//8
+col TOTAL FOR 999999
+select deptno,ename,sal,
+sum(sal) over(partition by deptno order by sal) "TOTAL"
+from emp;
+
+//9
+select deptno, ename, sal,
+sum(sal) over() "TOTAL_SAL",
+round(ratio_to_report(sum(sal)) over()*100,2) "%"
+from emp GROUP BY deptno,ename,sal
+order by sal desc;
+//10
+select deptno,ename,sal,sum(sal) over(partition by deptno) SUM_DEPT,
+round(ratio_to_report(sum(sal)) over(partition by deptno)*100,2) "%"
+from emp group by deptno,ename,sal;
+
+//11
+select l_date "대출일자", l_code "대충종목코드",
+l_qty "대출건수", l_total "대충총액",
+sum(l_total) over(order by l_date) "누적대출금액"
+from loan where l_store = 1000;
+//12
+select l_code "대출종목코드",l_store "대충지점",
+l_date "대출일자", l_qty "대출건수", l_total "대충액",
+sum(l_total) over(partition by l_code, l_store order by l_date) "누적대출금액"
+from loan;
+//13
+select l_date "대출일자", l_code "대충종목코드",
+l_qty "대출건수", l_total "대충총액",
+sum(l_total) over(partition by l_code order by l_code,l_total) "누적대출금액"
+from loan where l_store = 1000;
+/14
+select deptno,name, pay,sum(pay) over() "TOTAL_PAY",
+round(ratio_to_report(sum(pay)) over()*100,2) "RATIO_%"
+from professor group by deptno,name,pay order by pay desc;
+//15
+select deptno,name, pay,sum(pay) over(partition by deptno) "TOTAL_DEPTNO",
+round(ratio_to_report(sum(pay)) over(partition by deptno)*100,2) "RATIO_%"
+from professor group by deptno,name,pay order by deptno;

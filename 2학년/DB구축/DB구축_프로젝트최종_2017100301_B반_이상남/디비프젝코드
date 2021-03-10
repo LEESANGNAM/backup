@@ -1,0 +1,148 @@
+set sqlprompt'_USER>'
+set line 5000
+set pagesize 5000
+
+create user proj identified by proj;
+
+GRANT CREATE user, CREATE any table, SELECT any table, create session,
+create view, create procedure, create sequence TO proj;
+alter user proj default tablespace users quota unlimited on users;
+
+SELECT * FROM DBA_SYS_PRIVS
+WHERE GRANTEE = 'proj' ;
+
+CREATE TABLE member(
+  id VARCHAR2(20) PRIMARY KEY,
+  passwd VARCHAR2(20) NOT NULL,
+  name VARCHAR2(10) NOT NULL,
+  memnum VARCHAR2(14) NOT NULL,
+  address VARCHAR2(40),
+  phone  VARCHAR2(13),
+  age NUMBER);
+
+CREATE TABLE bestfood(
+  fid NUMBER PRIMARY KEY,
+  fname VARCHAR2(30) NOT NULL,
+  faddress VARCHAR2(40) NOT NULL,
+  fcount NUMBER
+);
+
+CREATE TABLE search(
+  sid NUMBER PRIMARY KEY,
+  id  VARCHAR2(20),
+  fid NUMBER,
+  sdate date,
+  CONSTRAINT id_fk
+  FOREIGN KEY(id)
+  REFERENCES member(id) ON DELETE CASCADE,
+  CONSTRAINT fid_fk
+  FOREIGN KEY(fid)
+  REFERENCES bestfood(fid) ON DELETE CASCADE
+);
+select CONSTRAINT_NAME, CONSTRAINT_TYPE, TABLE_NAME,  STATUS from  user_constraints
+  where table_name = 'SEARCH';
+
+
+desc member;
+desc bestfood;
+desc search;
+
+INSERT INTO member VALUES('tkdska0116','tkdska2ek','이상남','990116-1009999','서울시강서구화곡동','010-7579-9709',22);
+INSERT INTO bestfood VALUES(1,'맥앤맥','서울시강서구화곡동',1);
+INSERT INTO search VALUES(1,'tkdska0116',1,sysdate);
+
+/시퀀스
+CREATE SEQUENCE Food_count
+INCREMENT BY 1
+START WITH 1
+MINVALUE 1
+NOMAXVALUE
+NOCYCLE
+NOORDER
+CACHE 20;
+
+// 프로시저
+
+CREATE OR REPLACE PROCEDURE BF_INOR_Upcount(
+  p_name bestfood.fname%TYPE,
+  p_add bestfood.faddress%TYPE
+)
+IS
+   ch NUMBER :=0;
+   p_fcount bestfood.fcount%TYPE;
+BEGIN
+  SELECT COUNT(*) INTO ch
+  FROM bestfood WHERE fname = p_name;
+
+  IF ch=0 THEN
+  INSERT INTO bestfood VALUES(Food_count.NEXTVAL,p_name,p_add,1);
+  ELSE
+    SELECT fcount INTO p_fcount
+    FROM bestfood WHERE fname = p_name;
+
+    UPDATE bestfood SET fcount=p_fcount+1 WHERE fname=p_name;
+  END IF;
+
+  COMMIT;
+END;
+/
+
+
+
+drop sequence Food_count;
+delete from bestfood;
+alter SEQUENCE Food_count INCREMENT BY 1;
+      START WITH 1
+SELECT LAST_NUMBER FROM USER_SEQUENCES WHERE SEQUENCE_NAME = 'Food_count';
+SELECT Food_count.nextVal, Food_count.currVal FROM DUAL;
+exec BF_INOR_Upcount('03','내일도 몇시 간부려먹구 ');
+select * from bestfood orderby fid
+
+
+//시퀀스
+CREATE SEQUENCE SEARCH_count
+INCREMENT BY 1
+START WITH 1
+MINVALUE 1
+NOMAXVALUE
+NOCYCLE
+NOORDER
+CACHE 20;
+
+// 프로시저
+
+CREATE OR REPLACE PROCEDURE SEARCH_INOR_Update(
+  p_name bestfood.fname%TYPE,
+  p_memid member.id%TYPE
+)
+IS
+   ch NUMBER :=0;
+   p_fid bestfood.fid%TYPE;
+BEGIN
+  SELECT fid INTO p_fid
+  FROM bestfood WHERE fname = p_name;
+
+  SELECT COUNT(*) INTO ch
+  FROM search
+  WHERE id = p_memid AND fid = p_fid;
+
+  IF ch=0 THEN
+  INSERT INTO search VALUES(SEARCH_count.NEXTVAL,p_memid,p_fid,SYSDATE);
+  ELSE
+    UPDATE search SET sdate=SYSDATE WHERE id=p_memid;
+  END IF;
+
+  COMMIT;
+END;
+/
+
+delete from search;
+drop sequence SEARCH_count;
+INSERT INTO search VALUES(SEARCH_count.NEXTVAL,'tkdska2ek',3,'2019-10-20');
+select * from bestfood order by fid;
+select * from search order by sid;
+select * from member;
+exec SEARCH_INOR_Update('03','leeww');
+
+
+select * from (select fname,faddress,fcount,RANK( ) OVER (ORDER BY fcount DESC, fname) AS RANK from bestfood) where RANK between 11 and 20;

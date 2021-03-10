@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<n:networks xmlns:n="http://www.w3.org/1999/xhtml">
+
+<n:div style="float:left;">
+  <o:layer xmlns:o="http://osi/homework">
+    <n:h1>OSI 7계층</n:h1>
+    <n:p><o:name level = "7">응용 계층</o:name></n:p>
+    <n:p><o:name level = "6">표현 계층</o:name></n:p>
+    <n:p><o:name level = "5">세션 계층</o:name></n:p>
+    <n:p><o:name level = "4">전송 계층</o:name></n:p>
+    <n:p><o:name level = "3">네트워크 계층</o:name></n:p>
+    <n:p><o:name level = "2">데이터링크 계층</o:name></n:p>
+    <n:p><o:name level = "1">물리 계층</o:name></n:p>
+  </o:layer>
+</n:div>
+  <n:div style="float:left; padding-left : 10%;">
+  <t:layer xmlns:t="http://tcpip/homework">
+    <n:h1>TCP/IP 4계층</n:h1>
+    <n:p><t:name level = "4">응용 계층</t:name></n:p>
+    <n:p><t:name level = "3">전송 계층</t:name></n:p>
+    <n:p><t:name level = "2">네트워크 계층</t:name></n:p>
+    <n:p><t:name level = "1">인터페이스 계층</t:name></n:p>
+  </t:layer>
+  </n:div>
+</n:networks>

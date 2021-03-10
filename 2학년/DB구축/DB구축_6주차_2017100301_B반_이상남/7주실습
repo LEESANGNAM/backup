@@ -1,0 +1,15 @@
+DECLARE
+v_row emp%ROWTYPE ;
+
+BEGIN
+select * INTO v_row
+from emp
+where empno=7934;
+
+DBMS_OUTPUT.PUT_LINE(v_row.empno || '==='|| v_row.ENAME|| '=='||v_row.SAL);
+END;
+
+set serveroutput on
+
+declare
+vno pl_employees

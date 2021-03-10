@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classSchedule>
+  <subject name="윈도우 프로2">
+    <class>B반</class>
+    <day>월요일</day>
+    <times>
+      <time>3</time>
+      <time>4</time>
+    </times>
+    <room>2-204</room>
+
+    <day>수요일</day>
+    <times>
+      <time>3</time>
+      <time>4</time>
+    </times>
+    <room>2-215</room>
+
+  </subject>
+<subject name="웹서버구축">
+  <class>B반</class>
+  <day>월요일</day>
+  <times>
+    <time>6</time>
+    <time>7</time>
+  </times>
+  <room>2-204</room>
+
+  <class>B반</class>
+  <day>화요일</day>
+  <times>
+    <time>2</time>
+  </times>
+  <room>2-B103</room>
+</subject>
+
+<subject name="서버관리실무">
+  <class>B반</class>
+  <day>화요일</day>
+  <times>
+    <time>4</time>
+    <time>5</time>
+  </times>
+  <room>2-B103</room>
+
+  <class>B반</class>
+  <day>목요일</day>
+  <times>
+    <time>3</time>
+    <time>4</time>
+  </times>
+  <room>2-204</room>
+</subject>
+
+<subject name="DB구축운영">
+  <class>B반</class>
+  <day>화요일</day>
+  <times>
+    <time>6</time>
+  </times>
+  <room>2-B103</room>
+
+  <class>B반</class>
+  <day>금요일</day>
+  <times>
+    <time>3</time>
+    <time>4</time>
+  </times>
+  <room>2-204</room>
+</subject>
+
+<subject name="토익 중급">
+  <class>A반</class>
+  <day>화요일</day>
+  <times>
+    <time>8</time>
+    <time>9</time>
+  </times>
+  <room>online</room>
+</subject>
+
+<subject name="CS프로그래밍">
+  <class>B반</class>
+  <day>목요일</day>
+  <times>
+    <time>1</time>
+    <time>2</time>
+  </times>
+  <room>2-204</room>
+
+  <class>B반</class>
+  <day>금요일</day>
+  <times>
+    <time>6</time>
+  </times>
+  <room>2-B103</room>
+</subject>
+
+<subject name="XML">
+  <class>B반</class>
+  <day>금요일</day>
+  <times>
+    <time>1</time>
+    <time>2</time>
+  </times>
+  <room>2-204</room>
+</subject>
+
+</classSchedule>
